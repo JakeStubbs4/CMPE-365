@@ -88,36 +88,46 @@ def createHuffmanTree(alphabet_frequencies):
         new_ascii = [left_child.ascii_code, right_child.ascii_code]
         new_node = FrequencyNode([new_ascii, new_frequency], [left_child, right_child], max(left_child.depth + 1, right_child.depth + 1))
         sorted_frequencies_nodes = binaryInsert(sorted_frequencies_nodes, new_node)
-    #print("Root Node Ascii:" + str(sorted_frequencies_nodes[0].ascii_code) + ". Frequency: " + str(sorted_frequencies_nodes[0].frequency))
-    #print("Root Left Child Ascii: " + str(sorted_frequencies_nodes[0].left_child.ascii_code) + ". Frequency: " + str(sorted_frequencies_nodes[0].left_child.frequency))
-    #print("Root Right Child Ascii: " + str(sorted_frequencies_nodes[0].right_child.ascii_code) + ". Frequency: " + str(sorted_frequencies_nodes[0].right_child.frequency))
 
     return sorted_frequencies_nodes
 
-# Writes codes to a file named according to the canonical collection that was inputted by the user.
-def appendCodeToFile(huffman_root, currentCode, index, canonical_collection):
-    print(str(huffman_root.ascii_code) + ": " + str(currentCode[0:index+1]))
-
+# Writes codes to a text file named according to the canonical collection that was inputted by the user.
+def writeCodesToFile(codeword_array, codeword_file):
+    # Sort codeword array based on ascii code to have the desired structure of the text file.
+    sorted_codewords = sorted(codeword_array, key=lambda kv: int(kv[0].ascii_code))
+    for currentCode in sorted_codewords:
+        currentCodeword = [val for val in currentCode[1] if val is not None]
+        codeword_file.write(str(currentCode[0].ascii_code) + ": " + str(''.join(currentCodeword)) + "\n")
+    
 # Takes the root node of a huffman tree and creates a text file containing the corresponding alphabets codewords.
-def defineCodewords(huffman_root, currentCode, index, canonical_collection):
+def defineCodewords(huffman_root, currentCode, index, codewords):
+    # If there is a left child, continue down the tree and write a 0 to the codeword.
     if (huffman_root.left_child):
-        currentCode[index] = 0
-        defineCodewords(huffman_root.left_child, currentCode, index + 1, canonical_collection)
+        currentCode[index] = "0"
+        defineCodewords(huffman_root.left_child, currentCode, index + 1, codewords)
 
+    # If there is a right child, continue down the tree and write a 1 to the codeword.
     if (huffman_root.right_child):
-        currentCode[index] = 1
-        defineCodewords(huffman_root.right_child, currentCode, index + 1, canonical_collection)
+        currentCode[index] = "1"
+        defineCodewords(huffman_root.right_child, currentCode, index + 1, codewords)
 
+    # If we have reached a root node, append the current code to a file based on the canonical collection in use.
     if (not huffman_root.left_child) and (not huffman_root.right_child):
-        appendCodeToFile(huffman_root, currentCode, index, canonical_collection)
+        codewords.append([huffman_root, currentCode[0:index+1]])
+    
+    return codewords
 
 def main():
     canonical_collection = input("Enter the name of the canonical collection in the form of a zip file from which to extract the alphabet frequencies, including the file type: ")
     line_list = readZipFile(canonical_collection)
     alphabet_frequencies = extractAlphabetFrequencies(line_list)
-    print(alphabet_frequencies)
     huffman_root = createHuffmanTree(alphabet_frequencies)
+    # Initialize arrays to be used in defineCodwords()
     codeword_array = [None for i in range(huffman_root[0].depth)]
-    defineCodewords(huffman_root[0], codeword_array, 0, canonical_collection)
+    codewords = []
+    codewords_results = defineCodewords(huffman_root[0], codeword_array, 0, codewords)
+    # Initialize file based on inputted canonical_collection
+    codeword_file = open(str(canonical_collection[0:len(canonical_collection) - 4]) + " Codewords.txt", "w+")
+    writeCodesToFile(codewords_results, codeword_file)
 
 main()
