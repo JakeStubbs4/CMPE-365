@@ -23,7 +23,10 @@ class FrequencyNode:
 # binaryInsert() inserts a node into the minheap structure based on the elements frequency in O(logn) time.
 def binaryInsert(sorted_nodes_list, element):
     if len(sorted_nodes_list) <= 1:
-        if sorted_nodes_list[0].frequency >= element.frequency:
+        if len(sorted_nodes_list) == 0:
+            sorted_nodes_list.append(element)
+            return sorted_nodes_list
+        elif sorted_nodes_list[0].frequency >= element.frequency:
             sorted_nodes_list.insert(0, element)
             return sorted_nodes_list
         else:
@@ -76,16 +79,16 @@ def defineCodewords(alphabet_frequencies):
         sorted_frequencies_nodes.append(FrequencyNode(frequency, [None, None]))
 
     # Create a Huffman tree containing all of the frequency nodes.
-    while(len(sorted_frequencies_nodes) > 1):
+    while(len(sorted_frequencies_nodes) >= 2):
         left_child = sorted_frequencies_nodes.pop(0)
         right_child = sorted_frequencies_nodes.pop(0)
         new_frequency = left_child.frequency + right_child.frequency
         new_ascii = [left_child.ascii_code, right_child.ascii_code]
         new_node = FrequencyNode([new_ascii, new_frequency], [left_child, right_child])
         sorted_frequencies_nodes = binaryInsert(sorted_frequencies_nodes, new_node)
-
-    print("Root Left Child: " + str(sorted_frequencies_nodes.left_child))
-    print("Root Right Child: " + str(sorted_frequencies_nodes.right_child))
+    print("Root Node Ascii:" + str(sorted_frequencies_nodes[0].ascii_code) + ". Frequency: " + str(sorted_frequencies_nodes[0].frequency))
+    print("Root Left Child Ascii: " + str(sorted_frequencies_nodes[0].left_child.ascii_code))
+    print("Root Right Child Ascii: " + str(sorted_frequencies_nodes[0].right_child.ascii_code))
 
     # Initialize the codewords dictionary to "" for all printable characters.
     alphabet_codewords = {'10': ""}
