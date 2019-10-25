@@ -6,6 +6,7 @@ import zipfile
 import operator
 import collections
 import math
+import copy
 
 class FrequencyNode:
     ascii_code = None
@@ -21,22 +22,30 @@ class FrequencyNode:
 
 # binaryInsert() inserts a node into the minheap structure based on the elements frequency in O(logn) time.
 def binaryInsert(sorted_nodes_list, element):
-    if len(sorted_nodes_list) < 2:
+    print("New Iteration: ")
+    for node in sorted_nodes_list:
+        print(node.ascii_code)
+        print(node.frequency)
+    if len(sorted_nodes_list) <= 2:
+        print(sorted_nodes_list)
         if sorted_nodes_list[0].frequency >= element.frequency:
-            new_list = sorted_nodes_list.insert(0, element)
-            return new_list
+            sorted_nodes_list.insert(0, element)
+            return sorted_nodes_list
         else:
-            new_list = sorted_nodes_list.append(element)
-            return new_list
+            sorted_nodes_list.append(element)
+            return sorted_nodes_list
     else:
         mid_index = math.floor(len(sorted_nodes_list)/2) - 1
+        print("Mid Index: " + str(mid_index))
         if sorted_nodes_list[mid_index].frequency > element.frequency:
-            return binaryInsert(sorted_nodes_list[ :mid_index], element)
+            sorted_nodes_list = binaryInsert(sorted_nodes_list[0:mid_index], element) + sorted_nodes_list[mid_index + 1: len(sorted_nodes_list) - 1]
+            return sorted_nodes_list
         elif sorted_nodes_list[mid_index].frequency < element.frequency:
-            return binaryInsert(sorted_nodes_list[mid_index: ], element)
+            sorted_nodes_list = sorted_nodes_list[0:mid_index - 1] + binaryInsert(sorted_nodes_list[mid_index: len(sorted_nodes_list) - 1], element)
+            return sorted_nodes_list
         else:
-            new_list = sorted_nodes_list.insert(mid_index, element)
-            return new_list
+            sorted_nodes_list.insert(mid_index, element)
+            return sorted_nodes_list
 
 # readZipFile() takes a canonical collection and returns a list of all of the files contents.
 # This function was adapted from https://codeyarns.com/2013/10/03/how-to-read-contents-of-zip-file-in-python/ (NOT ENTIRELY MY OWN WORK)
@@ -72,16 +81,17 @@ def defineCodewords(alphabet_frequencies):
     for frequency in sorted_frequencies:
         sorted_frequencies_nodes.append(FrequencyNode(frequency, [None, None]))
 
-    new_list = []
+    old_list = []
     for i in range(5):
         if i != 3:
-            new_list.append(FrequencyNode([None, i], [None, None]))
+            old_list.append(FrequencyNode([32+i, i], [None, None]))
     
-    for elem in new_list:
+    for elem in old_list:
         print(elem.frequency)
 
-    element = FrequencyNode([None, 3], [None, None])
-    new_list = binaryInsert(new_list, element)
+    element = FrequencyNode([35, 1], [None, None])
+    print("Old List: " + str(old_list))
+    new_list = binaryInsert(old_list, element)
 
     for elem in new_list:
         print(elem.frequency)
@@ -90,8 +100,9 @@ def defineCodewords(alphabet_frequencies):
     while(len(sorted_frequencies_nodes) > 1):
         left_child = sorted_frequencies_nodes.pop(0)
         right_child = sorted_frequencies_nodes.pop(0)
-        frequency = left_child.frequency + right_child.frequency
-        new_node = FrequencyNode([None, frequency], [left_child, right_child])
+        new_frequency = left_child.frequency + right_child.frequency
+        new_ascii = [left_child.ascii_code, right_child.ascii_code]
+        new_node = FrequencyNode([new_ascii, new_frequency], [left_child, right_child])
         sorted_frequencies_nodes = binaryInsert(sorted_frequencies_nodes, new_node)
         for freq in sorted_frequencies_nodes:
             print(freq.frequency)
