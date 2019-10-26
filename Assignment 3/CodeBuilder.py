@@ -82,11 +82,16 @@ def createHuffmanTree(alphabet_frequencies):
 
     # Create a Huffman tree containing all of the frequency nodes.
     while(len(sorted_frequencies_nodes) >= 2):
+        # Pop the two nodes with the lowest frequency values
         left_child = sorted_frequencies_nodes.pop(0)
         right_child = sorted_frequencies_nodes.pop(0)
+
+        # Combine the nodes to create a new non-root node
         new_frequency = left_child.frequency + right_child.frequency
         new_ascii = [left_child.ascii_code, right_child.ascii_code]
         new_node = FrequencyNode([new_ascii, new_frequency], [left_child, right_child], max(left_child.depth + 1, right_child.depth + 1))
+
+        # Insert the new node into the sorted list
         sorted_frequencies_nodes = binaryInsert(sorted_frequencies_nodes, new_node)
 
     return sorted_frequencies_nodes
