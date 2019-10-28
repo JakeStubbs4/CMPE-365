@@ -21,6 +21,7 @@ def textFileToDecodingTree(codewords_file):
     root_node = decodingNode(None, None, None)
     for element in data_array:
         current_node = root_node
+        element[1] = list(element[1])
         while(len(element[1]) > 0):
             current_bit = element[1].pop(0)
             if current_bit == '0':
@@ -40,7 +41,8 @@ def textFileToDecodingTree(codewords_file):
         current_node.character = chr(int(element[0]))
     return root_node
 
-    def decodeFile(codeword_tree, encoded_filename):
+#def decodeFile(codeword_tree, encoded_filename):
+
 
 def main():
     # Request a canonical collection to use for the alphabet frequencies
@@ -49,8 +51,11 @@ def main():
     codewords_filename = str(canonical_collection[0:len(canonical_collection) - 4]) + " Codewords.txt"
     codewords_file = open(codewords_filename, "r")
     codeword_tree = textFileToDecodingTree(codewords_file)
+    print("Root Node: " + str(codeword_tree))
+    print("Left Child: " + str(codeword_tree.left_child))
+    print("Right Child: " + str(codeword_tree.right_child))
     # Encode a file using the dictionary defined in the codeword file
-    encoded_filename = input("Enter the name of the plaintext file to be encoded, including the .txt file extension: ")
-    decodeFile(codeword_tree, encoded_filename)
+    # encoded_filename = input("Enter the name of the plaintext file to be encoded, including the .txt file extension: ")
+    # decodeFile(codeword_tree, encoded_filename)
 
 main()
