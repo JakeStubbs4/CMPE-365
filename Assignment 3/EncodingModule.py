@@ -7,7 +7,7 @@ def textFileToEncodingDictionary(codewords_file):
     codeword_dictionary = {}
     for line in line_list:
         # Split each line by the ': ' delimiter to a ascii code and a binary string.
-        current_data = line.split(": ")
+        current_data = line.split(" ")
         ascii_code = current_data[0]
         # Remove additional line ending from codeword.
         codeword = current_data[1][0:len(current_data[1]) - 1]

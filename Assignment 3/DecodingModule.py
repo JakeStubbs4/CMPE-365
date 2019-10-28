@@ -2,8 +2,45 @@
 # 20005204
 # I certify that this submission contains my own work, except as noted.
 
-def textFileToDecodingDictionary(codewords_file):
-    
+class decodingNode:
+    left_child = None
+    right_child = None
+    character = None
+
+    def __init__(self, left_child, right_child, character):
+        self.left_child = left_child
+        self.right_child = right_child
+        self.character = character
+
+def textFileToDecodingTree(codewords_file):
+    line_list = codewords_file.readlines()
+    data_array = []
+    for line in line_list:
+        data_array.append(line.split(" "))
+
+    root_node = decodingNode(None, None, None)
+    for element in data_array:
+        current_node = root_node
+        while(len(element[1]) > 0):
+            current_bit = element[1].pop(0)
+            if current_bit == '0':
+                if current_node.left_child:
+                    current_node = current_node.left_child
+                else:
+                    current_node.left_child = decodingNode(None, None, None)
+                    current_node = current_node.left_child
+            elif current_bit == '1':
+                if current_node.right_child:
+                    current_node = current_node.right_child
+                else:
+                    current_node.right_child = decodingNode(None, None, None)
+                    current_node = current_node.right_child
+            else:
+                print("BROKEN: " + str(current_bit))
+        current_node.character = chr(int(element[0]))
+    return root_node
+
+    def decodeFile(codeword_tree, encoded_filename):
 
 def main():
     # Request a canonical collection to use for the alphabet frequencies
@@ -11,9 +48,9 @@ def main():
     # Open the corresponding codeword file and construct a dictionary for decoding.
     codewords_filename = str(canonical_collection[0:len(canonical_collection) - 4]) + " Codewords.txt"
     codewords_file = open(codewords_filename, "r")
-    codeword_dictionary = textFileToDecodingDictionary(codewords_file)
+    codeword_tree = textFileToDecodingTree(codewords_file)
     # Encode a file using the dictionary defined in the codeword file
     encoded_filename = input("Enter the name of the plaintext file to be encoded, including the .txt file extension: ")
-    decodeFile(codeword_dictionary, encoded_filename)
+    decodeFile(codeword_tree, encoded_filename)
 
 main()

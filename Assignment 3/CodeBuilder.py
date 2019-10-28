@@ -102,7 +102,7 @@ def writeCodesToFile(codeword_array, codeword_file):
     sorted_codewords = sorted(codeword_array, key=lambda kv: int(kv[0].ascii_code))
     for currentCode in sorted_codewords:
         currentCodeword = [val for val in currentCode[1] if val is not None]
-        codeword_file.write(str(currentCode[0].ascii_code) + ": " + str(''.join(currentCodeword)) + "\n")
+        codeword_file.write(str(currentCode[0].ascii_code) + " " + str(''.join(currentCodeword)) + "\n")
     
 # Takes the root node of a huffman tree and creates a text file containing the corresponding alphabets codewords.
 def defineCodewords(huffman_root, currentCode, index, codewords):
