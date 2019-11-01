@@ -55,7 +55,8 @@ def textFileToDecodingTree(codewords_file):
 def decodeFile(codeword_tree, encoded_filename):
     encoded_file = open(encoded_filename, "r+")
     file_contents = encoded_file.read()
-    plaintext_file = open(encoded_filename[0:len(encoded_filename) - 11] + "Decoded.txt", "w+")
+    plaintext_filename = str(encoded_filename[0:len(encoded_filename) - 11]) + "Decoded.txt"
+    plaintext_file = open(plaintext_filename, "w+")
     current_node = copy.deepcopy(codeword_tree)
 
     # Greedy approach to decoding: As soon as you find a character, print it.
@@ -79,6 +80,7 @@ def decodeFile(codeword_tree, encoded_filename):
         else:
             # If it is not a 0 or a 1 there is an issue (should not get here)
             print("BROKEN: " + str(current_node))
+    return plaintext_filename
 
 def main():
     # Request a canonical collection to use for the alphabet frequencies
@@ -91,7 +93,7 @@ def main():
     # Get name of original file that was encoded and then decode the file.
     encoded_filename = input("Enter the name of the plaintext file that was encoded which you now wish to decode, including the .txt file extension: ")
     encoded_filename = str(encoded_filename[0:len(encoded_filename) - 4]) + " " + str(codewords_filename[0:len(codewords_filename) - 4]) + " Encoded.txt"
-    decodeFile(codeword_tree, encoded_filename)
-    print("The decoded file is now available in your directory named as follows: {Original file name} {Codebook Filename} Decoded.txt")
+    plaintext_filename = decodeFile(codeword_tree, encoded_filename)
+    print("The decoded file is now available in your directory named as follows: " + str(plaintext_filename))
 
 main()

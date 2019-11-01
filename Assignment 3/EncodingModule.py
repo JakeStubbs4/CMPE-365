@@ -16,11 +16,13 @@ def textFileToEncodingDictionary(codewords_file):
 
 def encodeFile(codeword_dictionary, plaintext_filename, codewords_filename):
     plaintext_file = open(plaintext_filename, "r+")
-    encoded_file = open(str(plaintext_filename[0:len(plaintext_filename) - 4]) + " " + str(codewords_filename[0:len(codewords_filename) - 4]) + " Encoded.txt", "w+")
+    encoded_filename = str(plaintext_filename[0:len(plaintext_filename) - 4]) + " " + str(codewords_filename[0:len(codewords_filename) - 4]) + " Encoded.txt"
+    encoded_file = open(encoded_filename, "w+")
     file_contents = plaintext_file.read()
     for char in file_contents:
         if ord(char) == 10 or (ord(char) >= 32 and ord(char) <= 126):
             encoded_file.write(codeword_dictionary[str(ord(char))])
+    return encoded_filename
 
 def main():
     # Request a canonical collection to use for the alphabet frequencies
@@ -31,7 +33,7 @@ def main():
     codeword_dictionary = textFileToEncodingDictionary(codewords_file)
     # Encode a file using the dictionary defined in the codeword file
     plaintext_filename = input("Enter the name of the plaintext file to be encoded, including the .txt file extension: ")
-    encodeFile(codeword_dictionary, plaintext_filename, codewords_filename)
-    print("The encoded file is now available in your directory named as follows: {Original file name} {Codebook Filename} Encoded.txt")
+    encoded_filename = encodeFile(codeword_dictionary, plaintext_filename, codewords_filename)
+    print("The encoded file is now available in your directory named as follows: " + str(encoded_filename))
 
 main()
