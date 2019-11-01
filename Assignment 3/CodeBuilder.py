@@ -22,8 +22,9 @@ class FrequencyNode:
         self.right_child = children[1]
         self.depth = depth
 
-# binaryInsert() inserts a node into the minheap structure based on the elements frequency in O(logn) time.
+# binaryInsert() inserts a node into the correct position of a sorted list based on the elements frequency.
 def binaryInsert(sorted_nodes_list, element):
+    # If the length of the list is <= 1 we can insert the element based on direct comparrison.
     if len(sorted_nodes_list) <= 1:
         if len(sorted_nodes_list) == 0:
             sorted_nodes_list.append(element)
@@ -34,20 +35,27 @@ def binaryInsert(sorted_nodes_list, element):
         else:
             sorted_nodes_list.append(element)
             return sorted_nodes_list
+    # Otherwise we recurse on the appropriate half of the sorted list until it is of length <= 1:
     else:
+        # Approximate the mid index of the sorted list, cannot be exact if the list is of odd length and subtract 1 for appropriate indexing.
         mid_index = math.floor(len(sorted_nodes_list)/2) - 1
+        # If the node at the middle index has a greater frequency than the element to be inserted, then only the greater half of the entire list needs to be checked:
         if sorted_nodes_list[mid_index].frequency > element.frequency:
+            # Append the greater half of the sorted list to the list resulting from the recursive call
             sorted_nodes_list = binaryInsert(sorted_nodes_list[0:mid_index], element) + sorted_nodes_list[mid_index:len(sorted_nodes_list)]
             return sorted_nodes_list
+        # If the node at the middle index has a lesser frequency than the element to be inserted, then only the lesser half of the entire list needs to be checked:
         elif sorted_nodes_list[mid_index].frequency < element.frequency:
+            # Append the result of the recursive call to the lesser half of the sorted list.
             sorted_nodes_list = sorted_nodes_list[0:mid_index+1] + binaryInsert(sorted_nodes_list[mid_index+1:len(sorted_nodes_list)], element)
             return sorted_nodes_list
         else:
+            # If the middle node has the same frequency as the element to be inserted we can insert it directly adjacent to the middle element:
             sorted_nodes_list.insert(mid_index, element)
             return sorted_nodes_list
 
 # readZipFile() takes a canonical collection and returns a list of all of the files contents.
-# This function was adapted from https://codeyarns.com/2013/10/03/how-to-read-contents-of-zip-file-in-python/ (NOT ENTIRELY MY OWN WORK)
+# This function was adapted from https://codeyarns.com/2013/10/03/how-to-read-contents-of-zip-file-in-python/
 def readZipFile(filepath):
     zfile = zipfile.ZipFile(filepath)
     line_list = []

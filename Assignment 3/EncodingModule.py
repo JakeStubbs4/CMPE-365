@@ -14,9 +14,9 @@ def textFileToEncodingDictionary(codewords_file):
         codeword_dictionary[ascii_code] = codeword
     return codeword_dictionary
 
-def encodeFile(codeword_dictionary, plaintext_filename, canonical_collection):
+def encodeFile(codeword_dictionary, plaintext_filename, codewords_filename):
     plaintext_file = open(plaintext_filename, "r+")
-    encoded_file = open(str(plaintext_filename[0:len(plaintext_filename) - 4]) + " " + str(canonical_collection[0:len(canonical_collection) - 4]) + " Encoded.txt", "w+")
+    encoded_file = open(str(plaintext_filename[0:len(plaintext_filename) - 4]) + " " + str(codewords_filename[0:len(codewords_filename) - 4]) + " Encoded.txt", "w+")
     file_contents = plaintext_file.read()
     for char in file_contents:
         if ord(char) == 10 or (ord(char) >= 32 and ord(char) <= 126):
@@ -31,6 +31,7 @@ def main():
     codeword_dictionary = textFileToEncodingDictionary(codewords_file)
     # Encode a file using the dictionary defined in the codeword file
     plaintext_filename = input("Enter the name of the plaintext file to be encoded, including the .txt file extension: ")
-    encodeFile(codeword_dictionary, plaintext_filename, canonical_collection)
+    encodeFile(codeword_dictionary, plaintext_filename, codewords_filename)
+    print("The encoded file is now available in your directory named as follows: {Original file name} {Codebook Filename} Encoded.txt")
 
 main()
