@@ -58,10 +58,33 @@ def LCSLTable(files_lines, strings_dictionary1, strings_dictionary2):
             Table[i][j] = getData(i, j, Table, files_lines, strings_dictionary1, strings_dictionary2)
     return Table
 
+def recoverSequence(Table, files_lines, strings_dictionary1, strings_dictionary2):
+    matching_lines = []
+    i = len(files_lines[0]) - 1
+    j = len(files_lines[1]) - 1
+    while((i is not -1) or (j is not -1)):
+        if stringCompare(files_lines[0][i], files_lines[1][j], strings_dictionary1, strings_dictionary2) == True:
+            matching_lines.insert(0, (i, j))
+            i = i - 1
+            j = j - 1
+        else:
+            maximum_predecessor = max(Table[i-1][j], Table[i][j-1], Table[i-1][j-1])
+            if Table[i-1][j] == maximum_predecessor:
+                i = i-1
+            elif Table[i][j-1] == maximum_predecessor:
+                j = j - 1
+            else:
+                i = i - 1
+                j = j - 1
+    return matching_lines
+
 def main():
     filenames = str(input("Enter the filenames you wish to compare including their filetype seperated by a pipe (ie. file1.txt|file2.txt):"))
     files_list = filenames.split("|")
     strings_dictionary1, strings_dictionary2, files_lines = readFilesToDictionary(files_list)
     Table = LCSLTable(files_lines, strings_dictionary1, strings_dictionary2)
-    print(Table)
+    matching_lines = recoverSequence(Table, files_lines, strings_dictionary1, strings_dictionary2)
+    for pair in matching_lines:
+        print(pair)
+
 main()
